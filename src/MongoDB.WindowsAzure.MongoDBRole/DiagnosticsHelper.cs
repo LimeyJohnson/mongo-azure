@@ -22,7 +22,7 @@ namespace MongoDB.WindowsAzure.MongoDBRole
     using System;
     using System.Diagnostics;
 
-    using Microsoft.WindowsAzure.Diagnostics;
+    //using Microsoft.WindowsAzure.Diagnostics;
     using Microsoft.WindowsAzure.ServiceRuntime;
     using System.IO;
     using System.Security.Permissions;

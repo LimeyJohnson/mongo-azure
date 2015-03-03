@@ -176,73 +176,73 @@ namespace MongoDB.WindowsAzure.Backup
         /// </summary>
         private void Run()
         {
-            CloudDrive snapshottedDrive = null;
-            bool mountedSnapshot = false;
+            //CloudDrive snapshottedDrive = null;
+            //bool mountedSnapshot = false;
 
-            try
-            {
-                Log("Backup started for " + UriToBackup + "...");
+            //try
+            //{
+            //    Log("Backup started for " + UriToBackup + "...");
 
-                // Set up the cache, storage account, and blob client.
-                Log("Getting the cache...");
-                var localResource = RoleEnvironment.GetLocalResource(Constants.BackupLocalStorageName);
-                Log("Initializing the cache...");
-                CloudDrive.InitializeCache(localResource.RootPath, localResource.MaximumSizeInMegabytes);
-                Log("Setting up storage account...");
-                var storageAccount = CloudStorageAccount.Parse(Credential);
-                var client = storageAccount.CreateCloudBlobClient();
+            //    // Set up the cache, storage account, and blob client.
+            //    Log("Getting the cache...");
+            //    var localResource = RoleEnvironment.GetLocalResource(Constants.BackupLocalStorageName);
+            //    Log("Initializing the cache...");
+            //    CloudDrive.InitializeCache(localResource.RootPath, localResource.MaximumSizeInMegabytes);
+            //    Log("Setting up storage account...");
+            //    var storageAccount = CloudStorageAccount.Parse(Credential);
+            //    var client = storageAccount.CreateCloudBlobClient();
 
-                // Mount the snapshot.
-                Log("Mounting the snapshot...");
-                snapshottedDrive = new CloudDrive(UriToBackup, storageAccount.Credentials);
-                string driveLetter = snapshottedDrive.Mount(0, DriveMountOptions.None);
-                mountedSnapshot = true;
-                Log("...snapshot mounted to " + driveLetter);
+            //    // Mount the snapshot.
+            //    Log("Mounting the snapshot...");
+            //    snapshottedDrive = new CloudDrive(UriToBackup, storageAccount.Credentials);
+            //    string driveLetter = snapshottedDrive.Mount(0, DriveMountOptions.None);
+            //    mountedSnapshot = true;
+            //    Log("...snapshot mounted to " + driveLetter);
 
-                // Create the destination blob.
-                Log("Opening (or creating) the backup container...");
-                CloudBlobContainer backupContainer = client.GetContainerReference(BackupContainerName);
-                backupContainer.CreateIfNotExist();
-                var blobFileName = String.Format(Constants.BackupFormatString, DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
-                var blob = backupContainer.GetBlobReference(blobFileName);
+            //    // Create the destination blob.
+            //    Log("Opening (or creating) the backup container...");
+            //    CloudBlobContainer backupContainer = client.GetContainerReference(BackupContainerName);
+            //    backupContainer.CreateIfNotExist();
+            //    var blobFileName = String.Format(Constants.BackupFormatString, DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
+            //    var blob = backupContainer.GetBlobReference(blobFileName);
 
-                // Write everything in the mounted snapshot, to the TarWriter stream, to the BlobStream, to the blob.            
-                Log("Backing up:\n\tpath: " + driveLetter + "\n\tto blob: " + blobFileName + "\n");
-                using (var outputStream = blob.OpenWrite())
-                {
-                    using (var tar = new TarWriter(outputStream))
-                    {
-                        Log("Writing to the blob/tar...");
-                        AddAllToTar(driveLetter, tar);
-                    }
-                }
+            //    // Write everything in the mounted snapshot, to the TarWriter stream, to the BlobStream, to the blob.            
+            //    Log("Backing up:\n\tpath: " + driveLetter + "\n\tto blob: " + blobFileName + "\n");
+            //    using (var outputStream = blob.OpenWrite())
+            //    {
+            //        using (var tar = new TarWriter(outputStream))
+            //        {
+            //            Log("Writing to the blob/tar...");
+            //            AddAllToTar(driveLetter, tar);
+            //        }
+            //    }
 
-                // Set the blob's metadata.
-                Log("Setting the blob's metadata...");
-                blob.Metadata["FileName"] = blobFileName;
-                blob.Metadata["Submitter"] = "BlobBackup";
-                blob.SetMetadata();
+            //    // Set the blob's metadata.
+            //    Log("Setting the blob's metadata...");
+            //    blob.Metadata["FileName"] = blobFileName;
+            //    blob.Metadata["Submitter"] = "BlobBackup";
+            //    blob.SetMetadata();
 
-                Log("Unmounting the drive..."); // Keep this here because we want "terminating now" to be the last log event in a failure.
-            }
-            catch (Exception e)
-            {
-                Log("=========================");
-                Log("FAILURE: " + e.Message);
-                Log(e.StackTrace);
-                Log("");
-                Log("Terminating now.");
-            }
-            finally
-            {
-                // Unmount the drive.
-                if (mountedSnapshot)
-                {
-                    snapshottedDrive.Unmount();
-                }
+            //    Log("Unmounting the drive..."); // Keep this here because we want "terminating now" to be the last log event in a failure.
+            //}
+            //catch (Exception e)
+            //{
+            //    Log("=========================");
+            //    Log("FAILURE: " + e.Message);
+            //    Log(e.StackTrace);
+            //    Log("");
+            //    Log("Terminating now.");
+            //}
+            //finally
+            //{
+            //    // Unmount the drive.
+            //    if (mountedSnapshot)
+            //    {
+            //        snapshottedDrive.Unmount();
+            //    }
 
-                DateFinished = DateTime.Now;
-            }
+            //    DateFinished = DateTime.Now;
+            //}
         }
 
         /// <summary>

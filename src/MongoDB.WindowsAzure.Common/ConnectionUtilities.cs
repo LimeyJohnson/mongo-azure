@@ -87,7 +87,7 @@ namespace MongoDB.WindowsAzure.Common
                 Servers = GetServerAddresses(),
                 ConnectionMode = ConnectionMode.ReplicaSet,
                 SlaveOk = slaveOk,
-                SafeMode = SafeMode.True
+                WriteConcern = WriteConcern.Acknowledged
             };
         }
 

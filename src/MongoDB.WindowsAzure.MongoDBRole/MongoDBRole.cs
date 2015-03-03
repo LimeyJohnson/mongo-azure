@@ -37,7 +37,6 @@ namespace MongoDB.WindowsAzure.MongoDBRole
     {
 
         private Process mongodProcess = null;
-        private CloudDrive mongoDataDrive = null;
         private string mongodHost;
         private int mongodPort;
         private string mongodDataDriveLetter = null;
@@ -173,24 +172,6 @@ namespace MongoDB.WindowsAzure.MongoDBRole
                     "Exception in onstop - shutdown failed with {0} {1}",
                     e.Message, e.StackTrace);
             }
-
-            try
-            {
-                if (mongoDataDrive != null)
-                {
-                    DiagnosticsHelper.TraceInformation("Unmount called on data drive");
-                    mongoDataDrive.Unmount();
-                }
-                DiagnosticsHelper.TraceInformation("Unmount completed on data drive");
-            }
-            catch (Exception e)
-            {
-                //Ignore any and all exceptions here
-                DiagnosticsHelper.TraceWarning(
-                    "Exception in onstop - unmount failed with {0} {1}", 
-                    e.Message, e.StackTrace);
-            }
-
         }
 
         private void SetHostAndPort()
@@ -273,8 +254,7 @@ namespace MongoDB.WindowsAzure.MongoDBRole
                 Constants.MongoDataCredentialSetting,
                 containerName,
                 dataBlobName,
-                Settings.MaxDBDriveSizeInMB,
-                out mongoDataDrive);
+                Settings.MaxDBDriveSizeInMB);
             DiagnosticsHelper.TraceInformation("Obtained data drive as {0}", mongodDataDriveLetter);
             var dir = Directory.CreateDirectory(Path.Combine(mongodDataDriveLetter, @"data"));
             DiagnosticsHelper.TraceInformation("Data directory is {0}", dir.FullName);

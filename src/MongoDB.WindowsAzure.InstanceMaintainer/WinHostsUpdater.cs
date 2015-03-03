@@ -26,7 +26,7 @@ namespace MongoDB.WindowsAzure.InstanceMaintainer
 
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.ServiceRuntime;
-
+    
     using MongoDB.WindowsAzure.Common;
 
     public class WinHostsUpdater
